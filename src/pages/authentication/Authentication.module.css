@@ -1,0 +1,124 @@
+.container {
+  width: 100vw;
+  height: 100vh;
+  background-image: url(../../assets/images/authentication/hero-illustration.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  width: 444px;
+}
+
+.card .back_button .button {
+  display: flex;
+  color: black;
+  text-decoration: none;
+  align-items: center;
+  padding-bottom: 32px;
+}
+
+.card .back_button .button :hover {
+  text-decoration: underline;
+}
+
+.card .back_button .button .icon {
+  width: 20px;
+  padding: 2px;
+}
+
+.card .back_button .button span {
+  font-size: 14px;
+  margin-left: 2px;
+}
+
+.card .input_form {
+  background-color: #ffffff;
+  padding: 24px;
+  border-radius: 20px;
+  box-shadow: 0px 5px 22px 0px rgba(0, 0, 0, 0.04);
+}
+
+.card .input_form .top {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding-top: 8px;
+  padding-bottom: 16px;
+}
+
+.card .input_form .top .left {
+  width: calc(100% - 40px);
+}
+
+.card .input_form .top .left h3 {
+  font-size: 18px;
+}
+
+.card .input_form .top .left p {
+  font-size: 14px;
+  color: #6c737f;
+}
+
+.card .input_form .top .left a {
+  color: #635bff;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.card .input_form .top .left a:hover {
+  text-decoration: underline;
+}
+
+.card .input_form .content {
+  width: 100%;
+}
+
+.card .input_form .content .input {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.card .action_button {
+  display: flex;
+  flex-direction: column;
+}
+
+.card .action_button p {
+  color: #ff0f0f;
+  text-align: center;
+  margin: 0px 0px 10px 0px;
+  font-size: 14px;
+}
+
+.card .action_button .login_button {
+  width: 100%;
+  border-radius: 12px;
+  height: 42px;
+  background-color: #635bff;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.card .action_button a {
+  align-self: center;
+  text-decoration: none;
+  color: #635bff;
+  font-size: 14px;
+  margin-top: 16px;
+  margin-bottom: calc(32px - 16px);
+}
+
+.card .action_button a:hover {
+  text-decoration: underline;
+}
+
+.card .action_button .success {
+  color: #28a745;
+  text-align: center;
+  margin: 0px 0px 10px 0px;
+  font-size: 14px;
+}

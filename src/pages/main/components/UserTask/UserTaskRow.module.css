@@ -1,0 +1,55 @@
+.taskIdWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+}
+
+.copyButton img {
+  width: 16px;
+  height: 16px;
+}
+
+.action_buttons {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 4px;
+}
+
+.button {
+  padding: 6px;
+  margin: 0 2px;
+}
+
+.icon {
+  font-size: 18px;
+  color: #333;
+}
+
+table tbody td {
+  vertical-align: middle;
+  padding: 10px;
+}
+
+.taskIdWrapper {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.action_buttons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 100%;
+}
+
+.copyButton {
+  padding: 4px;
+}
+
+.icon {
+  font-size: 18px;
+  color: #333;
+}

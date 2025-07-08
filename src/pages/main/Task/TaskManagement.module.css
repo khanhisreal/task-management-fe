@@ -1,0 +1,208 @@
+.container {
+  height: 100vh;
+  background-color: #f3f4f6;
+}
+
+.main {
+  padding: 0px 120px;
+}
+
+.main .main_title {
+  font-size: 20px;
+}
+
+.main .main_form {
+  background-color: #ffffff;
+  margin: 16px 0px;
+  border-radius: 20px;
+}
+
+.main .main_form .header {
+  padding: 16px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.main .main_form .header p {
+  font-weight: 700;
+}
+
+.main .main_form .header .buttons .button {
+  margin-left: 8px;
+  border-radius: 12px;
+  text-transform: capitalize;
+  font-weight: 600;
+}
+
+.main .main_form .header .buttons .button img {
+  width: 20px;
+  margin-right: 8px;
+}
+
+.main .main_form .header .buttons .button:first-child {
+  background-color: #e0e0e0;
+  color: black;
+}
+
+.main .main_form .header .buttons .button:nth-child(2) {
+  background-color: #635bff;
+  color: white;
+}
+
+.main .main_form .search_bar {
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.main .main_form .search_bar .search {
+  padding: 6.5px 12px;
+  display: flex;
+  border: 1px solid #d2d6db;
+  width: 100%;
+  border-radius: 8px;
+}
+
+.main .main_form .search_bar .search img {
+  width: 24px;
+  height: 24px;
+  padding: 3.5px;
+  margin-right: 8px;
+}
+
+.main .main_form .search_bar .search input {
+  width: 100%;
+  border: none;
+  outline: none;
+}
+
+.main .main_form .search_bar .button {
+  background-color: #635bff;
+  color: white;
+  border-radius: 12px;
+  text-transform: capitalize;
+  font-weight: 600;
+  margin-left: 24px;
+}
+
+.main .main_form .table_container {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.main .main_form .table_container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.main .main_form .table_container table thead th {
+  position: sticky;
+  top: 0;
+  background-color: #f2f2f2;
+  z-index: 2;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.main .main_form .table_container table tbody .fallback {
+  padding: 20px 10px;
+  text-align: center;
+  color: #6c737f;
+}
+
+.main .main_form .table_container table tbody tr td {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 157%;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.main .main_form .pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 10px 24px;
+  border-radius: 5px;
+  margin-top: 16px;
+}
+
+.main .main_form .pagination .items_per_page {
+  display: flex;
+  align-items: center;
+}
+
+.main .main_form .pagination .items_per_page label {
+  margin-right: 5px;
+  font-size: 12px;
+  color: #6c737f;
+}
+
+.main .main_form .pagination .items_per_page select {
+  padding: 5px;
+  border: none;
+  outline: none;
+}
+
+.main .main_form .pagination .page_info {
+  font-size: 14px;
+  margin: 0px 26px;
+}
+
+.main .main_form .pagination .page_info span {
+  font-size: 12px;
+}
+
+.main .main_form .pagination .navigation_buttons {
+  display: flex;
+  align-items: center;
+}
+
+.main .main_form .pagination .navigation_buttons .button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main .main_form .pagination .navigation_buttons .button img {
+  width: 40px;
+  color: #6c737f;
+}
+
+@media screen and (max-width: 900px) {
+  .main {
+    padding: 0px 20px;
+  }
+
+  .main .main_form {
+    margin: 16px 0px;
+  }
+
+  .main .main_form .header {
+    flex-direction: row;
+  }
+
+  .main .main_form .header p {
+    margin-bottom: 8px;
+  }
+}
+
+@media screen and (max-width: 590px) {
+  .main .main_form .header .buttons .button img {
+    margin-right: 0px;
+  }
+
+  .main .main_form .header .buttons span {
+    display: none;
+  }
+}

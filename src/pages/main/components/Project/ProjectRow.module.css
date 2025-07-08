@@ -1,0 +1,29 @@
+tr {
+  height: 58px;
+}
+
+td {
+  vertical-align: middle;
+  padding: 10px;
+}
+
+.icon {
+  color: #333;
+}
+
+.action_buttons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.projectIdWrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.copyButton img {
+  width: 16px;
+  height: 16px;
+}

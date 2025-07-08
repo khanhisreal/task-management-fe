@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100%;
+  background-color: #f3f4f6;
+}
+
+.main {
+  flex: 1;
+  padding: 0px 120px;
+  display: flex;
+  flex-direction: column;
+}
+
+.main .main_title {
+  font-size: 20px;
+}
+
+.main .main_form {
+  background-color: #ffffff;
+  margin: 16px 0px;
+  border-radius: 20px;
+  padding: 16px;
+  overflow: hidden;
+}
+
+@media screen and (max-width: 768px) {
+  .main {
+    padding: 0px 24px;
+  }
+}

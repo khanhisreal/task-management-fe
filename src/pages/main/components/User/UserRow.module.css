@@ -1,0 +1,35 @@
+.button {
+  padding: 6px;
+  margin: 0 2px;
+}
+
+.icon {
+  font-size: 18px;
+  color: #333;
+}
+
+.action_buttons {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 4px;
+}
+
+.role_admin {
+  padding: 4px 8px;
+  background-color: #f7e600;
+  color: #333;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status_activated {
+  padding: 4px 8px;
+  background-color: #def7d9;
+  color: #357a38;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+

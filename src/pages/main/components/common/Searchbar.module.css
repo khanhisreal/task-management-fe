@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  padding: 0px 24px;
+}
+
+.left .icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px;
+}
+
+.left img {
+  width: 100%;
+}
+
+.right .button img:first-child {
+  width: 40px;
+}
+
+.right .button img:nth-child(2) {
+  width: 20px;
+  margin-left: 8px;
+}

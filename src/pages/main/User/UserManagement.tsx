@@ -1,65 +1,44 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { Searchbar } from "../components/common/Searchbar";
-import Add from "../../../assets/images/main/icon-add.png";
-import List from "../../../assets/images/main/icon-filter-list.png";
-import MagnifyingGlass from "../../../assets/images/main/Icon-magnifying-glass.png";
-import IconBack from "../../../assets/images/main/icon-back.png";
-import IconDown from "../../../assets/images/main/icon-down.png";
-import styles from "./UserManagement.module.css";
-import Button from "@mui/material/Button";
-import UserRow from "../components/User/UserRow";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
 import { useEffect, useState } from "react";
-import { ConfirmDelete } from "../components/User/ConfirmDelete";
-import { UserInfor } from "../components/User/UserInfor";
 import {
-  CircularProgress,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
+  TablePagination,
 } from "@mui/material";
-import { AddUser } from "../components/User/AddUser";
-import { useAppDispatch, useAppSelector } from "../../store/hook";
-import { fetchUsers as fetchUsersThunk } from "../../store/slice/userSlice";
-
-type User = {
-  _id: string;
-  fullname: string;
-  email: string;
-  status: string;
-  accountType: string;
-  role: string;
-  createdAt: string;
-  updatedAt: string;
-  iat: number;
-  exp: number;
-};
+import { useAppDispatch, useAppSelector } from "../../../store/hook";
+import { fetchUsers } from "../../../store/slice/userSlice";
+import { toast } from "react-toastify";
+import { FilterModal } from "../../../components/FilterModal";
+import { SearchActionBar } from "../../../components/SearchActionBar";
+import { TableComponent } from "../../../components/TableComponent";
+import Layout from "../../../layout/Layout";
+import { ConfirmDeleteDialog } from "../../../components/ConfirmDeleteDialog";
+import { userApi } from "../../../api";
+import { AddDrawer } from "../../../components/AddDrawer";
+import { AddUserForm } from "../../../components/User/AddUserForm";
+import { UserInforDrawer } from "../../../components/User/UserInforDrawer";
 
 export function UserManagement() {
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const [open, setOpen] = useState(false);
+  const [openFilter, setOpenFilter] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const [showAddUser, setShowAddUser] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [showEditDialog, setShowEditDialog] = useState(false);
 
+  const [showUserDrawer, setShowUserDrawer] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [isEdit, setIsEdit] = useState(false);
 
   const dispatch = useAppDispatch();
   const { users, loading, total } = useAppSelector((state) => state.user);
 
-  const handleOpen = () => setOpen(true);
-
-  const handleClose = () => setOpen(false);
+  const { user: currentUser } = useAppSelector((state) => state.login);
 
   const handleDeleteClick = (userId: string) => {
     setSelectedUserId(userId);
@@ -69,26 +48,13 @@ export function UserManagement() {
   const handleUserInforClick = (userId: string, action: string) => {
     setSelectedUserId(userId);
     setIsEdit(action === "update");
-    setShowEditDialog(true);
+    setShowUserDrawer(true);
   };
 
-  const handleCloseDeleteDialog = () => {
-    setShowDeleteDialog(false);
-    setSelectedUserId(null);
-  };
-
-  const handleCloseUserInfor = () => {
-    setShowEditDialog(false);
-    setSelectedUserId(null);
-  };
-
-  useEffect(() => {
-    loadUsers(1, rowsPerPage);
-  }, []);
-
-  const loadUsers = (page = currentPage, limit = rowsPerPage) => {
+  const loadUsers = (page: number, limit: number) => {
+    setCurrentPage(page);
     dispatch(
-      fetchUsersThunk({
+      fetchUsers({
         page,
         limit,
         query: searchQuery,
@@ -98,304 +64,190 @@ export function UserManagement() {
     );
   };
 
+  useEffect(() => {
+    loadUsers(1, rowsPerPage);
+  }, []);
+
+  const columns = [
+    "No",
+    "User ID",
+    "Full Name",
+    "Email",
+    "Role",
+    "Join Date",
+    "Status",
+    "Actions",
+  ];
+
+  const tableData = users.map((user, index) => ({
+    No: (currentPage - 1) * rowsPerPage + index + 1,
+    "User ID": user._id,
+    "Full Name": user.fullname,
+    Email: user.email,
+    Role: user.role,
+    "Join Date": new Date(user.createdAt).toLocaleString(),
+    Status: user.status,
+    id: user._id,
+  }));
+
   return (
-    <div className={styles.container}>
-      <Searchbar />
-      <div className={styles.main}>
-        <h1 className={styles.main_title}>
-          <span>User Management</span>
-        </h1>
-        <div className={styles.main_form}>
-          <div className={styles.form}>
-            <div className={styles.header}>
-              <p>List of Users</p>
-              <div className={styles.buttons}>
-                <Button
-                  variant="contained"
-                  className={styles.button}
-                  onClick={handleOpen}
-                >
-                  <img src={List} alt="" />
-                  <span>Filters</span>
-                </Button>
-                <Button
-                  variant="contained"
-                  className={styles.button}
-                  onClick={() => setShowAddUser(true)}
-                >
-                  <img src={Add} alt="" />
-                  <span>Add new member</span>
-                </Button>
-              </div>
-            </div>
-            <Modal
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="filter-modal-title"
-              aria-describedby="filter-modal-description"
-            >
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  width: 400,
-                  bgcolor: "background.paper",
-                  borderRadius: "12px",
-                  boxShadow: 24,
-                  p: 4,
-                }}
-              >
-                <Typography
-                  id="filter-modal-title"
-                  variant="h6"
-                  component="h2"
-                  sx={{ fontWeight: 700, mb: 2 }}
-                >
-                  User Filter
-                </Typography>
+    <Layout
+      title="User Management"
+      subtitle="List of Users"
+      onFilterClick={() => setOpenFilter(true)}
+      onAddClick={() => setShowAddUser(true)}
+      addButtonLabel="Add new member"
+    >
+      {/* Filter Modal */}
+      <FilterModal
+        open={openFilter}
+        title="User Filter"
+        onCancel={() => setOpenFilter(false)}
+        onApply={() => {
+          setCurrentPage(1);
+          loadUsers(1, rowsPerPage);
+          setOpenFilter(false);
+        }}
+      >
+        <FormControl fullWidth sx={{ mb: 2 }} size="small">
+          <InputLabel id="role-filter-label">Role</InputLabel>
+          <Select
+            labelId="role-filter-label"
+            label="Role"
+            value={roleFilter}
+            onChange={(e) => setRoleFilter(e.target.value)}
+          >
+            <MenuItem value="">All</MenuItem>
+            <MenuItem value="Manager">Manager</MenuItem>
+            <MenuItem value="Leader">Leader</MenuItem>
+            <MenuItem value="Employee">Employee</MenuItem>
+          </Select>
+        </FormControl>
 
-                {/* Role Select */}
-                <FormControl fullWidth sx={{ mb: 2 }} size="small">
-                  <InputLabel id="role-filter-label">Role</InputLabel>
-                  <Select
-                    labelId="role-filter-label"
-                    label="Role"
-                    defaultValue=""
-                    value={roleFilter}
-                    onChange={(e) => setRoleFilter(e.target.value)}
-                  >
-                    <MenuItem value="">All</MenuItem>
-                    <MenuItem value="Manager">Manager</MenuItem>
-                    <MenuItem value="Leader">Leader</MenuItem>
-                    <MenuItem value="Employee">Employee</MenuItem>
-                  </Select>
-                </FormControl>
+        <FormControl fullWidth sx={{ mb: 2 }} size="small">
+          <InputLabel id="status-filter-label">Status</InputLabel>
+          <Select
+            labelId="status-filter-label"
+            label="Status"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <MenuItem value="">All</MenuItem>
+            <MenuItem value="Activated">Activated</MenuItem>
+            <MenuItem value="Inactivated">Inactivated</MenuItem>
+          </Select>
+        </FormControl>
+      </FilterModal>
 
-                {/* Status Select */}
-                <FormControl fullWidth sx={{ mb: 3 }} size="small">
-                  <InputLabel id="status-filter-label">Status</InputLabel>
-                  <Select
-                    labelId="status-filter-label"
-                    label="Status"
-                    defaultValue=""
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                  >
-                    <MenuItem value="">All</MenuItem>
-                    <MenuItem value="Activated">Activated</MenuItem>
-                    <MenuItem value="Inactivated">Inactivated</MenuItem>
-                  </Select>
-                </FormControl>
+      {/* Search Bar */}
+      <SearchActionBar
+        searchQuery={searchQuery}
+        placeholder="Search for user Id, name, or email"
+        onSearchQueryChange={setSearchQuery}
+        onSearch={() => {
+          setCurrentPage(1);
+          loadUsers(1, rowsPerPage);
+        }}
+      />
 
-                {/* Action Buttons */}
-                <Box display="flex" justifyContent="flex-end" gap={1}>
-                  <Button
-                    onClick={handleClose}
-                    sx={{
-                      bgcolor: "#e0e0e0",
-                      color: "black",
-                      textTransform: "capitalize",
-                      fontWeight: 600,
-                      borderRadius: "12px",
-                      px: 2,
-                      "&:hover": {
-                        bgcolor: "#d5d5d5",
-                      },
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      setCurrentPage(1);
-                      loadUsers(1, rowsPerPage);
-                      handleClose();
-                    }}
-                    sx={{
-                      bgcolor: "#635bff",
-                      color: "white",
-                      textTransform: "capitalize",
-                      fontWeight: 600,
-                      borderRadius: "12px",
-                      px: 2,
-                      "&:hover": {
-                        bgcolor: "#564ee9",
-                      },
-                    }}
-                  >
-                    Apply
-                  </Button>
-                </Box>
-              </Box>
-            </Modal>
-            <div className={styles.search_bar}>
-              <div className={styles.search}>
-                <img src={MagnifyingGlass} alt="" />
-                <input
-                  type="text"
-                  placeholder="Search for user ID, name, email, or role"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      setCurrentPage(1);
-                      loadUsers(1, rowsPerPage);
-                    }
-                  }}
-                />
-              </div>
-              <Button
-                variant="contained"
-                className={styles.button}
-                onClick={() => {
-                  setCurrentPage(1);
-                  loadUsers(1, rowsPerPage);
-                }}
-              >
-                Search
-              </Button>
-            </div>
-            <div className={styles.table_container}>
-              <table>
-                <thead>
-                  <tr>
-                    <th>No</th>
-                    <th>User ID</th>
-                    <th>Full Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Join Date</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loading ? (
-                    <tr>
-                      <td colSpan={8}>
-                        <Box
-                          display="flex"
-                          justifyContent="center"
-                          alignItems="center"
-                          height="150px"
-                        >
-                          <CircularProgress />
-                        </Box>
-                      </td>
-                    </tr>
-                  ) : users.length === 0 ? (
-                    <tr>
-                      <td colSpan={8} className={styles.fallback}>
-                        No users found.
-                      </td>
-                    </tr>
-                  ) : (
-                    users.map((user: User, index: number) => (
-                      <UserRow
-                        key={user._id}
-                        no={index + 1}
-                        userId={user._id}
-                        fullname={user.fullname}
-                        email={user.email}
-                        role={user.role}
-                        joindate={new Date(user.createdAt).toLocaleString()}
-                        status={user.status}
-                        onDeleteClick={handleDeleteClick}
-                        onUserInforClick={handleUserInforClick}
-                      />
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-            <div className={styles.dialog_container}>
-              {showAddUser && (
-                <AddUser
-                  onClose={() => setShowAddUser(false)}
-                  onAdded={() => loadUsers(1, rowsPerPage)}
-                />
-              )}
-              {showDeleteDialog && (
-                <ConfirmDelete
-                  userId={selectedUserId!}
-                  onClose={handleCloseDeleteDialog}
-                  onDeleted={() => loadUsers(1, rowsPerPage)}
-                />
-              )}
-              {showEditDialog && selectedUserId && (
-                <UserInfor
-                  userId={selectedUserId}
-                  onClose={handleCloseUserInfor}
-                  isEdit={isEdit}
-                  onUpdated={() => loadUsers(1, rowsPerPage)}
-                />
-              )}
-            </div>
-            <div className={styles.pagination}>
-              <div className={styles.items_per_page}>
-                <label htmlFor="items_per_page">Rows per page:</label>
-                <select
-                  id={styles.items_per_page}
-                  value={rowsPerPage}
-                  onChange={(e) => {
-                    const newLimit = parseInt(e.target.value);
-                    setRowsPerPage(newLimit);
-                    setCurrentPage(1);
-                    loadUsers(1, newLimit);
-                  }}
-                >
-                  <option value="10">10</option>
-                  <option value="9">9</option>
-                  <option value="8">8</option>
-                  <option value="7">7</option>
-                  <option value="6">6</option>
-                  <option value="5">5</option>
-                  <option value="4">4</option>
-                  <option value="3">3</option>
-                  <option value="2">2</option>
-                  <option value="1">1</option>
-                </select>
-              </div>
-              <div className={styles.page_info}>
-                <span>
-                  {currentPage} of {Math.ceil(total / rowsPerPage) || 1}
-                </span>
-              </div>
-              <div className={styles.navigation_buttons}>
-                <Button
-                  variant="text"
-                  className={styles.button}
-                  onClick={() => {
-                    if (currentPage > 1) {
-                      const newPage = currentPage - 1;
-                      setCurrentPage(newPage);
-                      loadUsers(newPage, rowsPerPage);
-                    }
-                  }}
-                >
-                  <img src={IconBack} alt="" />
-                </Button>
-                <Button
-                  variant="text"
-                  className={styles.button}
-                  onClick={() => {
-                    const totalPages = Math.ceil(total / rowsPerPage);
-                    if (currentPage < totalPages) {
-                      const newPage = currentPage + 1;
-                      setCurrentPage(newPage);
-                      loadUsers(newPage, rowsPerPage);
-                    }
-                  }}
-                >
-                  <img src={IconDown} alt="" />
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      {/* Table */}
+      <TableComponent
+        loading={loading}
+        columns={columns}
+        data={tableData}
+        onDeleteClick={handleDeleteClick}
+        onRowActionClick={handleUserInforClick}
+      />
+
+      {/* Dialogs */}
+      <AddDrawer
+        open={showAddUser}
+        title="Add New User"
+        onClose={() => setShowAddUser(false)}
+      >
+        <AddUserForm
+          onClose={() => setShowAddUser(false)}
+          onAdded={() => loadUsers(1, rowsPerPage)}
+        />
+      </AddDrawer>
+
+      {showDeleteDialog && selectedUserId && (
+        <ConfirmDeleteDialog
+          open={showDeleteDialog}
+          title="Confirm user deletion"
+          message="Are you sure you want to delete this user? This action cannot be undone."
+          onCancel={() => {
+            setShowDeleteDialog(false);
+            setSelectedUserId(null);
+          }}
+          onConfirm={async () => {
+            try {
+              const userToDelete = users.find(
+                (user) => user._id === selectedUserId
+              );
+
+              if (!userToDelete) {
+                toast.error("User not found.");
+                return;
+              }
+
+              if (userToDelete.email === "admin@starack.com") {
+                toast.error("You cannot delete the default admin account.");
+                return;
+              }
+
+              if (userToDelete._id === currentUser!._id) {
+                toast.error(
+                  "You cannot delete your own account while logged in."
+                );
+                return;
+              }
+
+              await userApi.delete(`/user/${selectedUserId}`);
+              const newTotal = total - 1;
+              const maxPage = Math.ceil(newTotal / rowsPerPage);
+              const newPage = currentPage > maxPage ? maxPage : currentPage;
+              loadUsers(newPage, rowsPerPage);
+              setShowDeleteDialog(false);
+              setSelectedUserId(null);
+              toast.success("User deleted successfully.");
+            } catch (error) {
+              console.error(error);
+              toast.error("Failed to delete user.");
+            }
+          }}
+        />
+      )}
+
+      <UserInforDrawer
+        open={showUserDrawer}
+        userId={selectedUserId!}
+        isEdit={isEdit}
+        onClose={() => {
+          setShowUserDrawer(false);
+          setSelectedUserId(null);
+        }}
+        onUpdated={() => loadUsers(1, rowsPerPage)}
+      />
+
+      {/* Pagination */}
+      <TablePagination
+        component="div"
+        count={total}
+        page={currentPage - 1}
+        onPageChange={(_, newPage) => {
+          setCurrentPage(newPage + 1);
+          loadUsers(newPage + 1, rowsPerPage);
+        }}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={(e) => {
+          const newLimit = parseInt(e.target.value, 10);
+          setRowsPerPage(newLimit);
+          setCurrentPage(1);
+          loadUsers(1, newLimit);
+        }}
+        rowsPerPageOptions={[10, 9, 8, 7, 6, 5, 4, 3, 2, 1]}
+      />
+    </Layout>
   );
 }

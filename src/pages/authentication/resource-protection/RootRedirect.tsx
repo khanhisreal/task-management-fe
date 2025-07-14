@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { useAppSelector } from "../../store/hook";
+import { useAppSelector } from "../../../store/hook";
 
 export function RootRedirect() {
   const user = useAppSelector((state) => state.login.user);

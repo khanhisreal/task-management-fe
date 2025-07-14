@@ -1,6 +1,6 @@
 import type React from "react";
 import { Navigate } from "react-router-dom";
-import { useAppSelector } from "../../store/hook";
+import { useAppSelector } from "../../../store/hook";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -13,6 +13,9 @@ export default function ProtectedRoute({
 }: ProtectedRouteProps) {
   const accessToken = localStorage.getItem("accessToken");
   const user = useAppSelector((state) => state.login.user);
+  const isAuthChecked = useAppSelector((state) => state.auth.isAuthChecked);
+
+  if (!isAuthChecked) return null;
 
   if (!accessToken || !user) {
     return <Navigate to="/auth" replace />;

@@ -1,77 +1,15 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Login from "./pages/authentication/Login";
-import { Overview } from "./pages/main/Overview/Overview";
-import { UserManagement } from "./pages/main/User/UserManagement";
-import { Root } from "./pages/Root";
-import ProtectedRoute from "./pages/authentication/resource-protection/ProtectedRouteProps";
-import { RootRedirect } from "./pages/authentication/resource-protection/RootRedirect";
-import { ProjectManagement } from "./pages/main/Project/ProjectManagement";
-import { TaskManagement } from "./pages/main/Task/TaskManagement";
-import { CatchAllRedirect } from "./pages/authentication/resource-protection/CatchAllRedirect";
-import { useAppDispatch } from "./pages/store/hook";
-import { useEffect, useState } from "react";
-import { clearUser, setUser } from "./pages/store/slice/loginSlice";
-import { UserTask } from "./pages/main/UserTask/UserTask";
-import logo from "./assets/images/main/starack-logo.png";
-
-const router = createBrowserRouter([
-  { path: "auth", element: <Login /> },
-  { path: "/", element: <RootRedirect /> },
-  {
-    path: "",
-    element: <Root />,
-    children: [
-      {
-        path: "overview",
-        element: (
-          <ProtectedRoute allowedRoles={["Manager", "Leader"]}>
-            <Overview />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "user-management",
-        element: (
-          <ProtectedRoute allowedRoles={["Manager", "Leader"]}>
-            <UserManagement />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "project-management",
-        element: (
-          <ProtectedRoute allowedRoles={["Manager", "Leader"]}>
-            <ProjectManagement />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "task-management",
-        element: (
-          <ProtectedRoute allowedRoles={["Manager", "Leader"]}>
-            <TaskManagement />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "user-task",
-        element: (
-          <ProtectedRoute allowedRoles={["Employee"]}>
-            <UserTask />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "*",
-        element: <CatchAllRedirect />,
-      },
-    ],
-  },
-]);
+import { RouterProvider } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "./store/hook";
+import { useEffect } from "react";
+import { router } from "./RouteConfig";
+import { clearUser, setUser } from "./store/slice/loginSlice";
+import { setAuthChecked } from "./store/slice/authSlice";
+import Backdrop from "./pages/authentication/Backdrop";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const dispatch = useAppDispatch();
-  const [isAuthChecked, setIsAuthChecked] = useState(false);
+  const isAuthChecked = useAppSelector((state) => state.auth.isAuthChecked);
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
@@ -86,41 +24,28 @@ function App() {
         dispatch(clearUser());
       }
     }
-    setIsAuthChecked(true);
+    dispatch(setAuthChecked(true));
   }, [dispatch]);
 
   if (!isAuthChecked) {
-    return (
-      <div
-        style={{
-          height: "100vh",
-          width: "100vw",
-          backgroundColor: "white",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <img
-          src={logo}
-          alt="Starack Logo"
-          style={{ width: "40px", marginBottom: "12px" }}
-        />
-        <h1
-          style={{
-            fontSize: "18px",
-            fontWeight: 700,
-          }}
-        >
-          Starack
-        </h1>
-        <p>Version V1.2</p>
-      </div>
-    );
+    return <Backdrop />;
   }
 
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <RouterProvider router={router} />
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        newestOnTop
+        limit={3}
+        closeOnClick
+        pauseOnFocusLoss
+        pauseOnHover
+        draggable
+      />
+    </>
+  );
 }
 
 export default App;

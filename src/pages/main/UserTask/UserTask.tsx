@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import {
@@ -6,10 +7,10 @@ import {
   MenuItem,
   Select,
   TablePagination,
-  IconButton,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import CheckIcon from "@mui/icons-material/Check";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import AutorenewIcon from "@mui/icons-material/Autorenew";
 import { useAppDispatch, useAppSelector } from "../../../store/hook";
 import { fetchTasks } from "../../../store/slice/taskSlice";
 import { FilterModal } from "../../../components/FilterModal";
@@ -24,16 +25,16 @@ import { ConfirmStatusModal } from "../../../components/UserTask/ConfirmStatusMo
 export function UserTask() {
   const dispatch = useAppDispatch();
   const { tasks, total, loading } = useAppSelector((state) => state.task);
-
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [updateStatusTask, setUpdateStatusTask] = useState<{
+    id: string;
+    status: "In Progress" | "Done";
+  } | null>(null);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [viewTaskId, setViewTaskId] = useState<string | null>(null);
-  const [updateStatusTaskId, setUpdateStatusTaskId] = useState<string | null>(
-    null
-  );
 
   useEffect(() => {
     loadTasks(1, rowsPerPage);
@@ -57,8 +58,10 @@ export function UserTask() {
   const handleRowActionClick = (id: string, action: string) => {
     if (action === "view") {
       setViewTaskId(id);
-    } else if (action === "update-status") {
-      setUpdateStatusTaskId(id);
+    } else if (action === "mark-done") {
+      setUpdateStatusTask({ id, status: "Done" });
+    } else if (action === "mark-in-progress") {
+      setUpdateStatusTask({ id, status: "In Progress" });
     }
   };
 
@@ -67,17 +70,18 @@ export function UserTask() {
   };
 
   const handleConfirmStatusUpdate = async () => {
+    if (!updateStatusTask) return;
     try {
-      await taskApi.patch(`/task/${updateStatusTaskId}/status`, {
-        status: "Done",
+      await taskApi.patch(`/task/${updateStatusTask.id}/status`, {
+        status: updateStatusTask.status,
       });
-      toast.success("Task status updated to Done.");
+      toast.success(`Task status updated to ${updateStatusTask.status}.`);
       loadTasks(currentPage, rowsPerPage);
     } catch (error) {
       console.error(error);
       toast.error("Failed to update task status.");
     } finally {
-      setUpdateStatusTaskId(null);
+      setUpdateStatusTask(null);
     }
   };
 
@@ -106,6 +110,26 @@ export function UserTask() {
     "Created At": new Date(task.createdAt).toLocaleString(),
     Actions: "",
   }));
+
+  const actions = [
+    {
+      label: "View",
+      icon: <VisibilityIcon sx={{ fontSize: 18, color: "#333" }} />,
+      onClick: (id: string) => handleRowActionClick(id, "view"),
+    },
+    {
+      label: "Mark as Done",
+      icon: <CheckCircleOutlineIcon sx={{ fontSize: 18, color: "#333" }} />,
+      onClick: (id: string) => handleRowActionClick(id, "mark-done"),
+      disabled: (data: any) => data.Status === "Done",
+    },
+    {
+      label: "Mark as In Progress",
+      icon: <AutorenewIcon sx={{ fontSize: 18, color: "#333" }} />,
+      onClick: (id: string) => handleRowActionClick(id, "mark-in-progress"),
+      disabled: (data: any) => data.Status === "In Progress",
+    },
+  ];
 
   return (
     <Layout
@@ -158,25 +182,7 @@ export function UserTask() {
         onDeleteClick={handleDeleteClick}
         onRowActionClick={handleRowActionClick}
         variant="userTask"
-        renderActions={(row: any) => (
-          <>
-            <IconButton
-              onClick={() => handleRowActionClick(row.id, "view")}
-              color="primary"
-              title="View task details"
-            >
-              <VisibilityIcon />
-            </IconButton>
-            <IconButton
-              onClick={() => handleRowActionClick(row.id, "update-status")}
-              color="success"
-              title="Mark as Done"
-              disabled={row.Status === "Done"}
-            >
-              <CheckIcon />
-            </IconButton>
-          </>
-        )}
+        actions={actions}
       />
 
       {/* Pagination */}
@@ -207,8 +213,9 @@ export function UserTask() {
       />
 
       <ConfirmStatusModal
-        open={!!updateStatusTaskId}
-        onClose={() => setUpdateStatusTaskId(null)}
+        open={!!updateStatusTask}
+        status={updateStatusTask?.status || "Done"}
+        onClose={() => setUpdateStatusTask(null)}
         onConfirm={handleConfirmStatusUpdate}
       />
     </Layout>

@@ -10,6 +10,10 @@ import {
   TextField,
   Typography,
   Pagination,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState, useEffect, useCallback } from "react";
@@ -234,14 +238,33 @@ export function TaskInforDrawer({
                       )
                     }
                   />
-                  <TextField
-                    value={task.status}
-                    size="small"
-                    label="Status"
-                    fullWidth
-                    margin="normal"
-                    InputProps={{ readOnly: true }}
-                  />
+                  {isEdit ? (
+                    <FormControl fullWidth size="small" margin="normal">
+                      <InputLabel id="status-label">Status</InputLabel>
+                      <Select
+                        labelId="status-label"
+                        value={task.status}
+                        label="Status"
+                        onChange={(e) =>
+                          setTask((prev) =>
+                            prev ? { ...prev, status: e.target.value } : prev
+                          )
+                        }
+                      >
+                        <MenuItem value="In Progress">In Progress</MenuItem>
+                        <MenuItem value="Done">Done</MenuItem>
+                      </Select>
+                    </FormControl>
+                  ) : (
+                    <TextField
+                      value={task.status}
+                      size="small"
+                      label="Status"
+                      fullWidth
+                      margin="normal"
+                      InputProps={{ readOnly: true }}
+                    />
+                  )}
                   <TextField
                     value={task.projectTitles?.join(", ") || "No project"}
                     size="small"

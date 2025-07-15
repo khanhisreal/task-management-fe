@@ -11,6 +11,14 @@ import {
 } from "@mui/material";
 import { TableRowItem } from "./TableRowItem";
 
+type TableAction = {
+  label: string;
+  icon: React.ReactNode;
+  onClick: (id: string) => void;
+  hidden?: (data: any) => boolean;
+  disabled?: (data: any) => boolean;
+};
+
 type TableComponentProps = {
   loading: boolean;
   columns: string[];
@@ -18,12 +26,14 @@ type TableComponentProps = {
   onDeleteClick: (id: string) => void;
   onRowActionClick: (id: string, action: string) => void;
   variant?: string;
+  actions?: TableAction[];
 };
 
 export function TableComponent({
   loading,
   columns,
   data,
+  actions,
   onDeleteClick,
   onRowActionClick,
   variant,
@@ -84,6 +94,7 @@ export function TableComponent({
                 onDeleteClick={onDeleteClick}
                 onRowActionClick={onRowActionClick}
                 variant={variant}
+                actions={actions}
               />
             ))
           )}

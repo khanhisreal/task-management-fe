@@ -15,11 +15,20 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CopyIcon from "../assets/images/main/icon-content-copy.png";
 
+type TableAction = {
+  label: string;
+  icon: React.ReactNode;
+  onClick: (id: string) => void;
+  hidden?: (data: any) => boolean;
+  disabled?: (data: any) => boolean;
+};
+
 type TableRowItemProps = {
   columns: string[];
   data: Record<string, any>;
   onDeleteClick: (id: string) => void;
   onRowActionClick: (id: string, action: string) => void;
+  actions?: TableAction[];
   variant?: string;
 };
 
@@ -28,6 +37,7 @@ export function TableRowItem({
   data,
   onDeleteClick,
   onRowActionClick,
+  actions,
   variant,
 }: TableRowItemProps) {
   const [open, setOpen] = useState(false);
@@ -51,24 +61,45 @@ export function TableRowItem({
             return (
               <TableCell key={idx} sx={{ padding: "10px", width: "120px" }}>
                 <Box display="flex" alignItems="center" gap="4px">
-                  <IconButton onClick={() => onRowActionClick(data.id, "view")}>
-                    <RemoveRedEyeIcon sx={{ fontSize: 18, color: "#333" }} />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => onRowActionClick(data.id, "update")}
-                  >
-                    {variant === "userTask" ? (
-                      <CheckCircleOutlineIcon
-                        sx={{ fontSize: 18, color: "#333" }}
-                      />
-                    ) : (
-                      <CreateIcon sx={{ fontSize: 18, color: "#333" }} />
-                    )}
-                  </IconButton>
-                  {variant !== "userTask" && (
-                    <IconButton onClick={() => onDeleteClick(data.id)}>
-                      <DeleteIcon sx={{ fontSize: 18, color: "#333" }} />
-                    </IconButton>
+                  {actions && actions.length > 0 ? (
+                    actions
+                      .filter((action) => !action.hidden?.(data))
+                      .map((action, i) => (
+                        <IconButton
+                          key={i}
+                          onClick={() => action.onClick(data.id)}
+                          disabled={action.disabled?.(data)}
+                          title={action.label}
+                        >
+                          {action.icon}
+                        </IconButton>
+                      ))
+                  ) : (
+                    <>
+                      <IconButton
+                        onClick={() => onRowActionClick(data.id, "view")}
+                      >
+                        <RemoveRedEyeIcon
+                          sx={{ fontSize: 18, color: "#333" }}
+                        />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => onRowActionClick(data.id, "update")}
+                      >
+                        {variant === "userTask" ? (
+                          <CheckCircleOutlineIcon
+                            sx={{ fontSize: 18, color: "#333" }}
+                          />
+                        ) : (
+                          <CreateIcon sx={{ fontSize: 18, color: "#333" }} />
+                        )}
+                      </IconButton>
+                      {variant !== "userTask" && (
+                        <IconButton onClick={() => onDeleteClick(data.id)}>
+                          <DeleteIcon sx={{ fontSize: 18, color: "#333" }} />
+                        </IconButton>
+                      )}
+                    </>
                   )}
                 </Box>
               </TableCell>

@@ -6,18 +6,18 @@ import {
   Select,
   TablePagination,
 } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../../store/hook";
-import { fetchUsers } from "../../../store/slice/userSlice";
+import { useAppDispatch, useAppSelector } from "../../store/hook";
+import { fetchUsers } from "../../store/slice/userSlice";
 import { toast } from "react-toastify";
-import { FilterModal } from "../../../components/FilterModal";
-import { SearchActionBar } from "../../../components/SearchActionBar";
-import { TableComponent } from "../../../components/TableComponent";
-import Layout from "../../../layout/Layout";
-import { ConfirmDeleteDialog } from "../../../components/ConfirmDeleteDialog";
-import { userApi } from "../../../api";
-import { AddDrawer } from "../../../components/AddDrawer";
-import { AddUserForm } from "../../../components/User/AddUserForm";
-import { UserInforDrawer } from "../../../components/User/UserInforDrawer";
+import { FilterModal } from "../../components/FilterModal";
+import { SearchActionBar } from "../../components/SearchActionBar";
+import { TableComponent } from "../../components/TableComponent";
+import Layout from "../../layout/Layout";
+import { ConfirmDeleteDialog } from "../../components/ConfirmDeleteDialog";
+import { userApi } from "../../api";
+import { AddDrawer } from "../../components/AddDrawer";
+import { AddUserForm } from "../../components/User/AddUserForm";
+import { UserInforDrawer } from "../../components/User/UserInforDrawer";
 
 export function UserManagement() {
   const [searchQuery, setSearchQuery] = useState("");

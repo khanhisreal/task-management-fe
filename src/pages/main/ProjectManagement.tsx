@@ -8,17 +8,17 @@ import {
   Select,
   TablePagination,
 } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../../store/hook";
-import { fetchProjects } from "../../../store/slice/projectSlice";
-import { FilterModal } from "../../../components/FilterModal";
-import { SearchActionBar } from "../../../components/SearchActionBar";
-import { TableComponent } from "../../../components/TableComponent";
-import { projectApi, userApi } from "../../../api";
-import Layout from "../../../layout/Layout";
-import { ConfirmDeleteDialog } from "../../../components/ConfirmDeleteDialog";
-import { AddDrawer } from "../../../components/AddDrawer";
-import { AddProjectForm } from "../../../components/Project/AddProjectForm";
-import { ProjectInforDrawer } from "../../../components/Project/ProjectInforDrawer";
+import { useAppDispatch, useAppSelector } from "../../store/hook";
+import { fetchProjects } from "../../store/slice/projectSlice";
+import { FilterModal } from "../../components/FilterModal";
+import { SearchActionBar } from "../../components/SearchActionBar";
+import { TableComponent } from "../../components/TableComponent";
+import { projectApi, userApi } from "../../api";
+import Layout from "../../layout/Layout";
+import { ConfirmDeleteDialog } from "../../components/ConfirmDeleteDialog";
+import { AddDrawer } from "../../components/AddDrawer";
+import { AddProjectForm } from "../../components/Project/AddProjectForm";
+import { ProjectInforDrawer } from "../../components/Project/ProjectInforDrawer";
 
 export function ProjectManagement() {
   const [searchQuery, setSearchQuery] = useState("");

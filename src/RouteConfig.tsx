@@ -3,11 +3,11 @@ import Login from "./pages/authentication/Login";
 import { RootRedirect } from "./pages/authentication/resource-protection/RootRedirect";
 import { Root } from "./pages/Root";
 import ProtectedRoute from "./pages/authentication/resource-protection/ProtectedRouteProps";
-import Overview from "./pages/main/Overview/Overview";
-import { UserManagement } from "./pages/main/User/UserManagement";
-import { ProjectManagement } from "./pages/main/Project/ProjectManagement";
-import { TaskManagement } from "./pages/main/Task/TaskManagement";
-import { UserTask } from "./pages/main/UserTask/UserTask";
+import Overview from "./pages/main/Overview";
+import { UserManagement } from "./pages/main/UserManagement";
+import { ProjectManagement } from "./pages/main/ProjectManagement";
+import { TaskManagement } from "./pages/main/TaskManagement";
+import { UserTask } from "./pages/main/UserTask";
 import { CatchAllRedirect } from "./pages/authentication/resource-protection/CatchAllRedirect";
 
 export const router = createBrowserRouter([

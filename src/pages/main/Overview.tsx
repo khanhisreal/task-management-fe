@@ -9,9 +9,9 @@ import {
   Stack,
   Paper,
 } from "@mui/material";
-import { projectApi, taskApi, userApi } from "../../../api";
-import { useCountUp } from "../../../hooks/useCountUp";
-import Layout from "../../../layout/Layout";
+import { projectApi, taskApi, userApi } from "../../api";
+import { useCountUp } from "../../hooks/useCountUp";
+import Layout from "../../layout/Layout";
 
 export default function Overview() {
   const [usersCount, setUsersCount] = useState<{ data: number } | null>(null);

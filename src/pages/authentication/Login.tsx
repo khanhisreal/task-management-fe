@@ -1,15 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import styles from "./Login.module.css";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import CircularProgress from "@mui/material/CircularProgress";
 import { useState } from "react";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  CircularProgress,
+  Link,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { userApi } from "../../api";
 import { useAppDispatch } from "../../store/hook";
 import { setUser } from "../../store/slice/loginSlice";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import backgroundImage from "../../assets/images/authentication/hero-illustration.png";
 
 export default function Authentication() {
   const [loading, setLoading] = useState(false);
@@ -31,11 +36,9 @@ export default function Authentication() {
     }),
     onSubmit: async (values, { setStatus }) => {
       setLoading(true);
-
       try {
         const url = "/auth/login";
         const response = await userApi.post(url, values);
-
         localStorage.setItem("accessToken", response.data.accessToken);
         localStorage.setItem("refreshToken", response.data.refreshToken);
 
@@ -44,11 +47,17 @@ export default function Authentication() {
         );
         dispatch(setUser(payload));
 
-        navigate("/overview");
+        if (payload.role === "Manager" || payload.role === "Leader") {
+          navigate("/overview");
+        } else if (payload.role === "Employee") {
+          navigate("/user-task");
+        } else {
+          // fallback for unexpected role
+          navigate("/auth");
+        }
       } catch (error: any) {
         const error_message =
           error.response?.data?.message || "Something went wrong.";
-
         setStatus(error_message);
       } finally {
         setLoading(false);
@@ -57,40 +66,71 @@ export default function Authentication() {
   });
 
   return (
-    <div className={styles.container}>
-      <div className={styles.card}>
-        <div className={styles.input_form}>
+    <Box
+      sx={{
+        width: "100vw",
+        height: "100vh",
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "contain",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Box sx={{ width: 444 }}>
+        <Box
+          sx={{
+            backgroundColor: "#ffffff",
+            padding: "24px",
+            borderRadius: "20px",
+            boxShadow: "0px 5px 22px 0px rgba(0,0,0,0.04)",
+          }}
+        >
           <form onSubmit={formik.handleSubmit}>
-            <div className={styles.top}>
-              <div className={styles.left}>
-                <h3>Log in</h3>
-                <p>Hi there, please log in</p>
-              </div>
-            </div>
+            {/* Top */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                paddingY: "8px",
+                paddingBottom: "16px",
+              }}
+            >
+              <Box sx={{ flexGrow: 1 }}>
+                <Typography variant="h5" fontSize="18px" fontWeight={700}>
+                  Log in
+                </Typography>
+                <Typography fontSize="14px" color="#6C737F" sx={{ mt: "4px" }}>
+                  Hi there, please log in
+                </Typography>
+              </Box>
+            </Box>
 
-            <div className={styles.content}>
+            {/* Inputs */}
+            <Box sx={{ mb: 2 }}>
               <TextField
                 id="email-input"
                 label="Email address"
-                className={styles.input}
                 name="email"
+                type="email"
                 value={formik.values.email}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                type="email"
                 error={!!(formik.touched.email && formik.errors.email)}
                 helperText={
                   formik.touched.email && formik.errors.email
                     ? formik.errors.email
                     : ""
                 }
+                fullWidth
+                size="small"
+                sx={{ mb: 2 }}
               />
-
               <TextField
                 id="password-input"
                 label="Password"
                 type="password"
-                className={styles.input}
                 name="password"
                 value={formik.values.password}
                 onChange={formik.handleChange}
@@ -101,19 +141,42 @@ export default function Authentication() {
                     ? formik.errors.password
                     : ""
                 }
+                fullWidth
+                size="small"
               />
-            </div>
+            </Box>
 
-            <div className={styles.message}>
-              {formik.status && <p className={styles.error}>{formik.status}</p>}
-            </div>
+            {/* Error Message */}
+            {formik.status && (
+              <Typography
+                sx={{
+                  color: "#FF0F0F",
+                  textAlign: "center",
+                  fontSize: "14px",
+                  mb: "10px",
+                }}
+              >
+                {formik.status}
+              </Typography>
+            )}
 
-            <div className={styles.action_button}>
+            {/* Action Buttons */}
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Button
                 variant="contained"
-                className={styles.login_button}
                 type="submit"
                 disabled={loading}
+                sx={{
+                  width: "100%",
+                  borderRadius: "12px",
+                  height: "42px",
+                  backgroundColor: "#635BFF",
+                  fontWeight: 600,
+                  textTransform: "capitalize",
+                  "&:hover": {
+                    backgroundColor: "#564FF0",
+                  },
+                }}
               >
                 {loading ? (
                   <CircularProgress size={24} sx={{ color: "white" }} />
@@ -121,11 +184,24 @@ export default function Authentication() {
                   "Log in"
                 )}
               </Button>
-              <a href="#">Forgot password?</a>
-            </div>
+
+              <Link
+                href="#"
+                underline="hover"
+                sx={{
+                  alignSelf: "center",
+                  color: "#635BFF",
+                  fontSize: "14px",
+                  mt: "16px",
+                  mb: "16px",
+                }}
+              >
+                Forgot password?
+              </Link>
+            </Box>
           </form>
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 }

@@ -6,20 +6,30 @@ import {
   Button,
   Typography,
 } from "@mui/material";
+import { useEffect, useState } from "react";
 
 interface ConfirmStatusModalProps {
   open: boolean;
-  status: "In Progress" | "Done";
+  initialStatus: "In Progress" | "Done";
   onClose: () => void;
   onConfirm: () => void;
 }
 
 export function ConfirmStatusModal({
   open,
-  status,
+  initialStatus,
   onClose,
   onConfirm,
 }: ConfirmStatusModalProps) {
+  const [status, setStatus] = useState<"In Progress" | "Done">(initialStatus);
+
+  // reset status whenever dialog opens
+  useEffect(() => {
+    if (open) {
+      setStatus(initialStatus);
+    }
+  }, [open, initialStatus]);
+
   return (
     <Dialog
       open={open}

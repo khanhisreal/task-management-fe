@@ -6,17 +6,17 @@ import {
   Select,
   TablePagination,
 } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../../store/hook";
-import { fetchTasks } from "../../../store/slice/taskSlice";
-import { FilterModal } from "../../../components/FilterModal";
-import { SearchActionBar } from "../../../components/SearchActionBar";
-import { TableComponent } from "../../../components/TableComponent";
-import Layout from "../../../layout/Layout";
-import { ConfirmDeleteDialog } from "../../../components/ConfirmDeleteDialog";
-import { taskApi } from "../../../api";
-import { AddDrawer } from "../../../components/AddDrawer";
-import { AddTaskForm } from "../../../components/Task/AddTaskForm";
-import { TaskInforDrawer } from "../../../components/Task/TaskInforDrawer";
+import { useAppDispatch, useAppSelector } from "../../store/hook";
+import { fetchTasks } from "../../store/slice/taskSlice";
+import { FilterModal } from "../../components/FilterModal";
+import { SearchActionBar } from "../../components/SearchActionBar";
+import { TableComponent } from "../../components/TableComponent";
+import Layout from "../../layout/Layout";
+import { ConfirmDeleteDialog } from "../../components/ConfirmDeleteDialog";
+import { taskApi } from "../../api";
+import { AddDrawer } from "../../components/AddDrawer";
+import { AddTaskForm } from "../../components/Task/AddTaskForm";
+import { TaskInforDrawer } from "../../components/Task/TaskInforDrawer";
 
 export function TaskManagement() {
   const [searchQuery, setSearchQuery] = useState("");

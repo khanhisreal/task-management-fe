@@ -8,9 +8,14 @@ export function RootRedirect() {
     return <Navigate to="/auth" replace />;
   }
 
+  if (user.role === "Manager" || user.role === "Leader") {
+    return <Navigate to="/overview" replace />;
+  }
+
   if (user.role === "Employee") {
     return <Navigate to="/user-task" replace />;
   }
 
-  return <Navigate to="/overview" replace />;
+  // Fallback for unknown roles
+  return <Navigate to="/auth" replace />;
 }

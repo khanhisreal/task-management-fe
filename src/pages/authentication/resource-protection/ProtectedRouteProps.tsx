@@ -1,6 +1,7 @@
 import type React from "react";
 import { Navigate } from "react-router-dom";
 import { useAppSelector } from "../../../store/hook";
+import { ErrorPage } from "../../error/ErrorPage";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -22,11 +23,7 @@ export default function ProtectedRoute({
   }
 
   if (!allowedRoles.includes(user.role)) {
-    if (user.role === "Employee") {
-      return <Navigate to="/user-task" replace />;
-    } else {
-      return <Navigate to="/overview" replace />;
-    }
+    return <ErrorPage />;
   }
 
   return <>{children}</>;

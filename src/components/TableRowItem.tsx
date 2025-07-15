@@ -17,8 +17,8 @@ import CopyIcon from "../assets/images/main/icon-content-copy.png";
 
 type TableAction = {
   label: string;
-  icon: React.ReactNode;
-  onClick: (id: string) => void;
+  icon: React.ReactNode | ((data: any) => React.ReactNode);
+  onClick: (id: string, data?: any) => void;
   hidden?: (data: any) => boolean;
   disabled?: (data: any) => boolean;
 };
@@ -67,11 +67,13 @@ export function TableRowItem({
                       .map((action, i) => (
                         <IconButton
                           key={i}
-                          onClick={() => action.onClick(data.id)}
+                          onClick={() => action.onClick(data.id, data)}
                           disabled={action.disabled?.(data)}
                           title={action.label}
                         >
-                          {action.icon}
+                          {typeof action.icon === "function"
+                            ? action.icon(data)
+                            : action.icon}
                         </IconButton>
                       ))
                   ) : (

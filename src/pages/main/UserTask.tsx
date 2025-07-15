@@ -11,16 +11,16 @@ import {
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
-import { useAppDispatch, useAppSelector } from "../../../store/hook";
-import { fetchTasks } from "../../../store/slice/taskSlice";
-import { FilterModal } from "../../../components/FilterModal";
-import { SearchActionBar } from "../../../components/SearchActionBar";
-import { TableComponent } from "../../../components/TableComponent";
-import Layout from "../../../layout/Layout";
-import { UserTaskInforDrawer } from "../../../components/UserTask/UserTaskInforDrawer";
-import { taskApi } from "../../../api";
+import { useAppDispatch, useAppSelector } from "../../store/hook";
+import { fetchTasks } from "../../store/slice/taskSlice";
+import { FilterModal } from "../../components/FilterModal";
+import { SearchActionBar } from "../../components/SearchActionBar";
+import { TableComponent } from "../../components/TableComponent";
+import Layout from "../../layout/Layout";
+import { UserTaskInforDrawer } from "../../components/UserTask/UserTaskInforDrawer";
+import { taskApi } from "../../api";
 import { toast } from "react-toastify";
-import { ConfirmStatusModal } from "../../../components/UserTask/ConfirmStatusModal";
+import { ConfirmStatusModal } from "../../components/UserTask/ConfirmStatusModal";
 
 export function UserTask() {
   const dispatch = useAppDispatch();
@@ -111,23 +111,25 @@ export function UserTask() {
     Actions: "",
   }));
 
-  const actions = [
+  const actions: any = [
     {
       label: "View",
       icon: <VisibilityIcon sx={{ fontSize: 18, color: "#333" }} />,
       onClick: (id: string) => handleRowActionClick(id, "view"),
     },
     {
-      label: "Mark as Done",
-      icon: <CheckCircleOutlineIcon sx={{ fontSize: 18, color: "#333" }} />,
-      onClick: (id: string) => handleRowActionClick(id, "mark-done"),
-      disabled: (data: any) => data.Status === "Done",
-    },
-    {
-      label: "Mark as In Progress",
-      icon: <AutorenewIcon sx={{ fontSize: 18, color: "#333" }} />,
-      onClick: (id: string) => handleRowActionClick(id, "mark-in-progress"),
-      disabled: (data: any) => data.Status === "In Progress",
+      label: "Change Status",
+      icon: (data: any) =>
+        data.Status === "Done" ? (
+          <AutorenewIcon sx={{ fontSize: 18, color: "#333" }} />
+        ) : (
+          <CheckCircleOutlineIcon sx={{ fontSize: 18, color: "#333" }} />
+        ),
+      onClick: (id: string, data: any) =>
+        handleRowActionClick(
+          id,
+          data.Status === "Done" ? "mark-in-progress" : "mark-done"
+        ),
     },
   ];
 
@@ -214,7 +216,7 @@ export function UserTask() {
 
       <ConfirmStatusModal
         open={!!updateStatusTask}
-        status={updateStatusTask?.status || "Done"}
+        initialStatus={updateStatusTask?.status || "Done"}
         onClose={() => setUpdateStatusTask(null)}
         onConfirm={handleConfirmStatusUpdate}
       />
